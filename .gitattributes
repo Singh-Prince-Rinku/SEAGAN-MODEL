@@ -1,0 +1,6 @@
+large_data_file.dat filter=lfs diff=lfs merge=lfs -text
+*.bin filter=lfs diff=lfs merge=lfs -text
+<<<<<<< HEAD
+checkpoints/seagan_final.pt filter=lfs diff=lfs merge=lfs -text
+=======
+>>>>>>> b1e548a (Configure Git LFS tracking for large files)
