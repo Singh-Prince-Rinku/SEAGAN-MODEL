@@ -1,20 +1,15 @@
-# app/app.py
-"""
-Gradio app that exposes two buttons:
-- Denoise & pack to PNG
-- Restore PNG to WAV
-
-This app expects 'checkpoint/seagan_final.pt' to exist in the repo (git-lfs).
-"""
-
-import gradio as gr
+# app.py  (place at repo root)
 import os
-from pipeline.pipeline import InferConfig, denoise_chunked_final, save_audio_as_png_lossless, load_audio_from_png_lossless, write_wav_from_tensor
+import gradio as gr
+from pipeline.pipeline import InferConfig, denoise_chunked_final, load_audio_from_png_lossless, write_wav_from_tensor
 
-# prepare config pointing to local checkpoint
-CFG = InferConfig(ckpt_path="checkpoints/seagan_final.pt")
+# ensure SSR disabled early (best-effort)
+# Note: gradio uses the ssr_mode parameter in launch; we still set env var to be safe
+os.environ.setdefault("GRADIO_SSR_MODE", "false")
+
+# Config: checkpoint path in repo (checkpoint/seagan_final.pt)
+CFG = InferConfig(ckpt_path="checkpoint/seagan_final.pt")
 PNG_WIDTH = 2048
-
 
 def denoise_and_pack_gr(input_file):
     if input_file is None:
@@ -22,7 +17,6 @@ def denoise_and_pack_gr(input_file):
     src = input_file
     base = os.path.splitext(os.path.basename(src))[0]
     out_wav = f"/tmp/{base}_denoised.wav"
-    out_png = f"/tmp/{base}_packed.png"
     try:
         result = denoise_chunked_final(src, out_wav, CFG,
                                        chunk_seconds=30.0, overlap=0.5,
@@ -34,7 +28,6 @@ def denoise_and_pack_gr(input_file):
         return result[1]
     return None
 
-
 def restore_png_gr(png_file):
     if png_file is None:
         return None
@@ -45,7 +38,6 @@ def restore_png_gr(png_file):
         return out_wav
     except Exception as e:
         return f"ERROR: {e}"
-
 
 with gr.Blocks() as demo:
     gr.Markdown("# SEGAN Denoiser — Denoise ➜ Pack PNG ➜ Restore WAV")
@@ -62,5 +54,14 @@ with gr.Blocks() as demo:
     btn.click(denoise_and_pack_gr, inputs=wav_in, outputs=out_png)
     btn2.click(restore_png_gr, inputs=png_in, outputs=out_wav)
 
+# queue to avoid blocking the server for long-running jobs
+demo.queue(concurrency_count=1, max_size=8)
+
+# Launch with explicit ssr_mode=False and prevent_thread_lock to reduce teardown races
 if __name__ == "__main__":
-    demo.launch()
+    port = int(os.environ.get("PORT", 7860))
+    demo.launch(server_name="0.0.0.0",
+                server_port=port,
+                share=False,
+                ssr_mode=False,
+                prevent_thread_lock=True)
