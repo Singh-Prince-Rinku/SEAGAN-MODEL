@@ -55,7 +55,7 @@ with gr.Blocks() as demo:
     btn2.click(restore_png_gr, inputs=png_in, outputs=out_wav)
 
 # queue to avoid blocking the server for long-running jobs
-demo.queue(concurrency_count=1, max_size=8)
+demo.queue()
 
 # Launch with explicit ssr_mode=False and prevent_thread_lock to reduce teardown races
 if __name__ == "__main__":
