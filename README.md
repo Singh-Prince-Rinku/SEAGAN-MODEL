@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 SEAGAN Speech Enhancement & API
 ===============================
 
@@ -77,3 +78,19 @@ Tips
 - Keep input WAVs mono or they will be averaged to mono.
 - Large files are chunked; adjust `chunk_seconds` and `overlap` in `denoise_chunked_final`.
 - Ensure the checkpoint matches the model architecture in `SEGAN.py`.
+=======
+---
+title: SEGAN
+emoji: 🏢
+colorFrom: green
+colorTo: yellow
+sdk: gradio
+sdk_version: 6.1.0
+app_file: app.py
+pinned: false
+license: apache-2.0
+short_description: Remove BackgroundNoise and Generate Image from the Audio
+---
+
+Check out the configuration reference at https://huggingface.co/docs/hub/spaces-config-reference
+>>>>>>> b15accf770b0a139b21a8b09501ce8fd93a23c44
