@@ -1,9 +1,9 @@
 fastapi==0.95.2
 uvicorn[standard]==0.22.0
-torch==2.1.0+cpu
-torchaudio==2.1.0+cpu
+torch==2.1.0
+torchaudio==2.1.0
 numpy==1.26.4
 pillow==10.1.0
 requests==2.32.2
-boto3==1.30.24
-botocore==1.35.24
+huggingface-hub>=0.14.1
+gradio==3.39.0
