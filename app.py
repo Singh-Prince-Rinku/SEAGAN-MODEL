@@ -12,7 +12,7 @@ import os
 from pipeline.pipeline import InferConfig, denoise_chunked_final, save_audio_as_png_lossless, load_audio_from_png_lossless, write_wav_from_tensor
 
 # prepare config pointing to local checkpoint
-CFG = InferConfig(ckpt_path="checkpoint/seagan_final.pt")
+CFG = InferConfig(ckpt_path="checkpoints/seagan_final.pt")
 PNG_WIDTH = 2048
 
 
